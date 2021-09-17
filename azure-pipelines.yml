@@ -21,3 +21,27 @@ steps:
     publishJUnitResults: false
     testResultsFiles: '**/TEST-*.xml'
     tasks: 'assembleRelease'
+
+- task: AndroidSigning@3
+  inputs:
+    apkFiles: '**/*.apk'
+    apksign: true
+    apksignerKeystoreFile: 'production.keystore'
+    apksignerKeystorePassword: 'keystorepwd'
+    apksignerKeystoreAlias: 'key0'
+    apksignerKeyPassword: 'aliaspwd'
+    apksignerArguments: --out $(Build.SourcesDirectory)/app/build/outputs/apk/release/my-crazy-app.release.apk
+    zipalign: true
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: $(Build.SourcesDirectory)
+    contents: '**/*.release.apk'
+    targetFolder: '$(build.artifactStagingDirectory)'
+    overWrite: true
+    
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/app/build/outputs/apk/release/'
+    artifactName: 'apks'
+    publishLocation: 'container'

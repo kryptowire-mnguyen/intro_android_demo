@@ -52,3 +52,5 @@ steps:
     apikey: 'Yqsx9T83A5T1vENxaU4n5KGupOSNAOHnLl48'
     platform: 'android'
     resultsDir: '$(Build.ArtifactStagingDirectory)/app/build/outputs/apk/release/'
+    maxAnalysisTime: 75
+    scoreThreshold: 50

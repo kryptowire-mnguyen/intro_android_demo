@@ -9,6 +9,7 @@ trigger:
 pool:
   vmImage: 'macos-latest'
 
+
 steps:
 - task: Gradle@2
   inputs:
@@ -30,7 +31,7 @@ steps:
     apksignerKeystorePassword: 'test123'
     apksignerKeystoreAlias: 'test'
     apksignerKeyPassword: 'test123'
-    apksignerArguments: --out $(Build.SourcesDirectory)/app/build/outputs/apk/release/my-crazy-app.release.apk
+    apksignerArguments: --out $(Build.SourcesDirectory)/app/build/outputs/apk/release/demo.release.apk
     zipalign: true
 
 - task: CopyFiles@2
@@ -47,10 +48,18 @@ steps:
     publishLocation: 'container'
     
 - task: KryptowireMAST@2
+  continueOnError: true
   inputs:
-    filepath: '$(Build.SourcesDirectory)/app/build/outputs/apk/release/my-crazy-app.release.apk'
+    filepath: '$(Build.SourcesDirectory)/app/build/outputs/apk/release/demo.release.apk'
     apikey: 'Yqsx9T83A5T1vENxaU4n5KGupOSNAOHnLl48'
     platform: 'android'
-    resultsDir: '$(Build.ArtifactStagingDirectory)/app/build/outputs/apk/release/'
+    resultsDir: '$(Build.ArtifactStagingDirectory)/KryptowireResults'
     maxAnalysisTime: 75
-    scoreThreshold: 50
+    scoreThreshold: 70
+    
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: '$(Build.ArtifactStagingDirectory)/KryptowireResults'
+    artifactName: 'KryptowireResults'
+    artifactType: 'container'
